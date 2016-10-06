@@ -4,7 +4,7 @@
 Quick script to test integrating import.io and slack. Work in progress.
 
 ```
-usage: slack_app.py [-h] [-d DATA] [-s SLACK] [-m MESSAGE] [-t TEXT_COL]
+usage: slack_app.py [-h] -d DATA -s SLACK [-m MESSAGE] [-t TEXT_COL]
                     [-i IMAGE_COL] [-n NUM_ROWS]
 
 Post import.io data to a slack channel
