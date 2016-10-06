@@ -40,7 +40,7 @@ IMAGE_COL = 'Image'
 TEXT_COL = 'Meal'
 KEY_COL = 'Date'
 # URL for data
-DATA_URL = 'https://data.import.io/extractor/b2bf2d07-2485-451b-8718-ef6273640599/json/latest?_apikey=10fd4d0e33d846f382665a71ccdc153c77a750263b35622dc51271b446bf487f321b7fd4d0ec2cdc6e29201105536ca6cd84b316ebc6546aeab869dedb63245cdeb00fffdf2971071d421b3883422f0d'
+DATA_URL = '' # TODO config
 
 
 # instantiate Slack client
