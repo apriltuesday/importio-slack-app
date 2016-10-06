@@ -63,8 +63,6 @@ def get_attachments(data_url, text_col, image_col, num_rows=None, key_col=None, 
 
 if __name__ == '__main__':
 	# Default values
-	data_url = '' #config
-	slack_url = '' #config
 	num_rows = 5
 	message = 'What\'s for lunch?'
 	text_col = 'Meal'
@@ -72,18 +70,16 @@ if __name__ == '__main__':
 
 	# Command line args
 	parser = argparse.ArgumentParser(description='Post import.io data to a slack channel')
-	parser.add_argument('-d', '--data', help='url of json data from import.io')
-	parser.add_argument('-s', '--slack', help='url of slack webhook')
+	parser.add_argument('-d', '--data', required=True, help='url of json data from import.io')
+	parser.add_argument('-s', '--slack', required=True, help='url of slack webhook')
 	parser.add_argument('-m', '--message', help='message to include with post')
 	parser.add_argument('-t', '--text_col', help='name of column to use as main text')
 	parser.add_argument('-i', '--image_col', help='name of column to use as main image')
 	parser.add_argument('-n', '--num_rows', type=int, help='max number rows of data to post')
 	args = parser.parse_args()
 
-	if args.data:
-		data_url = args.data
-	if args.slack:
-		slack_url = args.slack
+	data_url = args.data
+	slack_url = args.slack
 	if args.message:
 		message = args.message
 	if args.text_col:

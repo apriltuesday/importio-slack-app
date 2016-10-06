@@ -40,7 +40,7 @@ IMAGE_COL = 'Image'
 TEXT_COL = 'Meal'
 KEY_COL = 'Date'
 # URL for data
-DATA_URL = '' # TODO config
+DATA_URL = os.environ.get("SLACK_BOT_URL")
 
 
 # instantiate Slack client
