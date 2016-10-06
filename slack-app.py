@@ -7,12 +7,12 @@ import requests
 import sys
 import argparse
 
-IMAGE_KEY = 'Image'
 
-
-def main(data_url, slack_url, message, num_rows):
+def main(data_url, slack_url, message, text_col, image_col, num_rows):
+	# Get the data
 	r = requests.get(data_url)
 	if r.status_code == 200:
+	
 		data = r.json()['result']['extractorData']['data'][0]['group']
 		payload = {'text': message, 'attachments': []}
 
@@ -22,7 +22,7 @@ def main(data_url, slack_url, message, num_rows):
 
 			for name, props in d.items():
 				props = props[0]
-				if name == IMAGE_KEY or 'text' not in props.keys():
+				if name == image_col or name == text_col or 'text' not in props.keys():
 					continue
 				value = '<' + props['href'] + '|' + props['text'] + '>' if 'href' in props.keys() else props['text']
 				f = {'title': name, 'value': value}
@@ -30,14 +30,16 @@ def main(data_url, slack_url, message, num_rows):
 					f['short'] = True
 				row['fields'].append(f)
 
-			# Get an image
-			if IMAGE_KEY in d.keys():
-				img = d[IMAGE_KEY][0]
+			# Get the text
+			if text_col in d.keys():
+				row['text'] = d[text_col][0]['text']
+			# Get the image
+			if image_col in d.keys():
+				img = d[image_col][0]
 				row['image_url'] = img['src'] if 'src' in img.keys() else img['text']
 
 			payload['attachments'].append(row)
 			
-
 		# Make the POST request
 		requests.post(slack_url, json=payload)
 		print 'Done!'
@@ -52,12 +54,16 @@ if __name__ == '__main__':
 	slack_url = 'https://hooks.slack.com/services/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'
 	num_rows = 5
 	message = 'What\'s for lunch?'
+	text_col = 'Meal'
+	image_col = 'Image'
 
 	# Command line args
 	parser = argparse.ArgumentParser(description='Post import.io data to a slack channel')
 	parser.add_argument('-d', '--data', help='url of json data from import.io')
 	parser.add_argument('-s', '--slack', help='url of slack webhook')
 	parser.add_argument('-m', '--message', help='message to include with post')
+	parser.add_argument('-t', '--text_col', help='name of column to use as main text')
+	parser.add_argument('-i', '--image_col', help='name of column to use as main image')
 	parser.add_argument('-n', '--num_rows', type=int, help='max number rows of data to post')
 	args = parser.parse_args()
 
@@ -67,7 +73,11 @@ if __name__ == '__main__':
 		slack_url = args.slack
 	if args.message:
 		message = args.message
+	if args.text_col:
+		text_col = args.text_col
+	if args.image_col:
+		image_col = args.image_col
 	if args.num_rows:
 		num_rows = args.num_rows
 	
-	main(data_url, slack_url, message, num_rows)
+	main(data_url, slack_url, message, text_col, image_col, num_rows)
