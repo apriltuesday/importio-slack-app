@@ -9,43 +9,56 @@ import argparse
 
 
 def main(data_url, slack_url, message, text_col, image_col, num_rows):
+	payload = {'text': message}
+	payload['attachments'] = get_attachments(data_url, text_col, image_col, num_rows=num_rows)
+			
+	# Make the POST request
+	requests.post(slack_url, json=payload)
+	print 'Done!'
+
+
+def get_attachments(data_url, text_col, image_col, num_rows=None, key_col=None, key_val=None):
+	attachments = []
 	# Get the data
 	r = requests.get(data_url)
 	if r.status_code == 200:
-	
+		print('Data request successful')
 		data = r.json()['result']['extractorData']['data'][0]['group']
-		payload = {'text': message, 'attachments': []}
+		data = data[:num_rows] if num_rows else data
 
 		# Make one attachment for each data row
 		for d in data[:num_rows]:
-			row = {'fields': []}
+			if key_col and (key_col not in d.keys() or key_val not in d[key_col][0]['text']):
+				continue
 
+			row = {'fields': []}
 			for name, props in d.items():
 				props = props[0]
-				if name == image_col or name == text_col or 'text' not in props.keys():
+
+				# Get text and image
+				if name == text_col:
+					row['text'] = props['text']
 					continue
+				if name == image_col:
+					row['image_url'] = props['src'] if 'src' in props.keys() else props['text']
+					continue
+				if 'text' not in props.keys():
+					continue
+
+				# Get other fields
 				value = '<' + props['href'] + '|' + props['text'] + '>' if 'href' in props.keys() else props['text']
 				f = {'title': name, 'value': value}
 				if len(props['text']) < 32:
 					f['short'] = True
 				row['fields'].append(f)
+			attachments.append(row)
 
-			# Get the text
-			if text_col in d.keys():
-				row['text'] = d[text_col][0]['text']
-			# Get the image
-			if image_col in d.keys():
-				img = d[image_col][0]
-				row['image_url'] = img['src'] if 'src' in img.keys() else img['text']
-
-			payload['attachments'].append(row)
-			
-		# Make the POST request
-		requests.post(slack_url, json=payload)
-		print 'Done!'
+		if len(attachments) == 0:
+			attachments.append({'text': 'Reply hazy, try again'})
 
 	else:
-		print 'Request not successful'
+		attachments.append({'text': 'Request not successful'})
+	return attachments
 
 
 if __name__ == '__main__':
