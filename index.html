@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Import.io Slack Bots by apriltuesday</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Import.io Slack Bots</h1>
+        <p>import.io and slack, together forever &lt;3</p>
+
+        <p class="view"><a href="https://github.com/apriltuesday/importio-slack-app">View the Project on GitHub <small>apriltuesday/importio-slack-app</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/apriltuesday/importio-slack-app/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/apriltuesday/importio-slack-app/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/apriltuesday/importio-slack-app">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="importio-slack-app" class="anchor" href="#importio-slack-app" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>importio-slack-app</h1>
+
+<h2>
+<a id="slack_app" class="anchor" href="#slack_app" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>slack_app</h2>
+
+<p>Quick script to test integrating import.io and slack. Work in progress.</p>
+
+<pre><code>usage: slack_app.py [-h] -d DATA -s SLACK [-m MESSAGE] [-t TEXT_COL]
+                    [-i IMAGE_COL] [-n NUM_ROWS]
+
+Post import.io data to a slack channel
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -d DATA, --data DATA  url of json data from import.io
+  -s SLACK, --slack SLACK
+                        url of slack webhook
+  -m MESSAGE, --message MESSAGE
+                        message to include with post
+  -t TEXT_COL, --text_col TEXT_COL
+                        name of column to use as main text
+  -i IMAGE_COL, --image_col IMAGE_COL
+                        name of column to use as main image
+  -n NUM_ROWS, --num_rows NUM_ROWS
+                        max number rows of data to post
+</code></pre>
+
+<h2>
+<a id="lunchbot" class="anchor" href="#lunchbot" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>lunchbot</h2>
+
+<p>A bot to post lunches from City Pantry.</p>
+
+<h2>
+<a id="to-do" class="anchor" href="#to-do" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>To-Do</h2>
+
+<ul>
+<li>should ideally only post the diff...</li>
+<li>also needs a scheduled import api, this needs to be scheduled to match</li>
+<li>how to get images robustly?</li>
+</ul>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/apriltuesday">apriltuesday</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>

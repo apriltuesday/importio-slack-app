@@ -1,0 +1,6 @@
+{
+  "name": "Import.io Slack Bots",
+  "tagline": "import.io and slack, together forever <3",
+  "body": "# importio-slack-app\r\n\r\n## slack_app\r\nQuick script to test integrating import.io and slack. Work in progress.\r\n\r\n```\r\nusage: slack_app.py [-h] -d DATA -s SLACK [-m MESSAGE] [-t TEXT_COL]\r\n                    [-i IMAGE_COL] [-n NUM_ROWS]\r\n\r\nPost import.io data to a slack channel\r\n\r\noptional arguments:\r\n  -h, --help            show this help message and exit\r\n  -d DATA, --data DATA  url of json data from import.io\r\n  -s SLACK, --slack SLACK\r\n                        url of slack webhook\r\n  -m MESSAGE, --message MESSAGE\r\n                        message to include with post\r\n  -t TEXT_COL, --text_col TEXT_COL\r\n                        name of column to use as main text\r\n  -i IMAGE_COL, --image_col IMAGE_COL\r\n                        name of column to use as main image\r\n  -n NUM_ROWS, --num_rows NUM_ROWS\r\n                        max number rows of data to post\r\n```\r\n\r\n## lunchbot\r\nA bot to post lunches from City Pantry.\r\n\r\n## To-Do\r\n- should ideally only post the diff...\r\n- also needs a scheduled import api, this needs to be scheduled to match\r\n- how to get images robustly?",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
