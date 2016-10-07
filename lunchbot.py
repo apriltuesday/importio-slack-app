@@ -60,6 +60,7 @@ def get_formatted_date(day):
         current = current.replace(day=current.day+1)
     return current.strftime('%d %B %Y')
 
+
 def get_cat():
     attach = []
     r = requests.get('http://thecatapi.com/api/images/get')
