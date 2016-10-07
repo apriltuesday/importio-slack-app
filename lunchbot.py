@@ -7,6 +7,7 @@
 # Created on 2016-10-06
 
 import os
+import requests
 import time
 from datetime import date
 from slackclient import SlackClient
@@ -37,7 +38,7 @@ relative = [TODAY, TOMORROW]
 
 # column names
 IMAGE_COL = 'Image'
-TEXT_COL = 'Meal'
+TITLE_COL = 'Meal'
 KEY_COL = 'Date'
 # URL for data
 DATA_URL = os.environ.get("SLACK_BOT_URL")
@@ -59,6 +60,16 @@ def get_formatted_date(day):
         current = current.replace(day=current.day+1)
     return current.strftime('%d %B %Y')
 
+def get_cat():
+    attach = []
+    r = requests.get('http://thecatapi.com/api/images/get')
+    if r.status_code == 200:
+        attach = [{
+            'image_url': r.url,
+            'text': '<' + r.url + '|src>'
+        }]
+    return attach
+
 
 def handle_command(command, channel):
     """
@@ -75,13 +86,13 @@ def handle_command(command, channel):
             response = "Here's what's for lunch! Yum :yum:"
             # convert day to date, because of how data formatted
             date_string = get_formatted_date(day)
-            attach = get_attachments(DATA_URL, TEXT_COL, IMAGE_COL, key_col=KEY_COL, key_val=date_string)
+            attach = get_attachments(DATA_URL, TITLE_COL, IMAGE_COL, key_col=KEY_COL, key_val=date_string)
 
     # weekends
     for day in weekends:
         if day in command:
             response = "There's no lunch on the weekends! Have a cat instead :cat:"
-            # TODO http://thecatapi.com/api/images/get ?
+            attach = get_cat()
 
     # relative
     for day in relative:

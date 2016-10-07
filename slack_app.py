@@ -8,16 +8,16 @@ import sys
 import argparse
 
 
-def main(data_url, slack_url, message, text_col, image_col, num_rows):
+def main(data_url, slack_url, message, title_col, image_col, num_rows):
 	payload = {'text': message}
-	payload['attachments'] = get_attachments(data_url, text_col, image_col, num_rows=num_rows)
+	payload['attachments'] = get_attachments(data_url, title_col, image_col, num_rows=num_rows)
 			
 	# Make the POST request
 	requests.post(slack_url, json=payload)
 	print 'Done!'
 
 
-def get_attachments(data_url, text_col, image_col, num_rows=None, key_col=None, key_val=None):
+def get_attachments(data_url, title_col, image_col, num_rows=None, key_col=None, key_val=None):
 	attachments = []
 	# Get the data
 	r = requests.get(data_url)
@@ -36,8 +36,8 @@ def get_attachments(data_url, text_col, image_col, num_rows=None, key_col=None, 
 				props = props[0]
 
 				# Get text and image
-				if name == text_col:
-					row['text'] = props['text']
+				if name == title_col:
+					row['title'] = props['text']
 					continue
 				if name == image_col:
 					row['image_url'] = props['src'] if 'src' in props.keys() else props['text']
@@ -65,7 +65,7 @@ if __name__ == '__main__':
 	# Default values
 	num_rows = 5
 	message = 'What\'s for lunch?'
-	text_col = 'Meal'
+	title_col = 'Meal'
 	image_col = 'Image'
 
 	# Command line args
@@ -73,7 +73,7 @@ if __name__ == '__main__':
 	parser.add_argument('-d', '--data', required=True, help='url of json data from import.io')
 	parser.add_argument('-s', '--slack', required=True, help='url of slack webhook')
 	parser.add_argument('-m', '--message', help='message to include with post')
-	parser.add_argument('-t', '--text_col', help='name of column to use as main text')
+	parser.add_argument('-t', '--title_col', help='name of column to use as main title')
 	parser.add_argument('-i', '--image_col', help='name of column to use as main image')
 	parser.add_argument('-n', '--num_rows', type=int, help='max number rows of data to post')
 	args = parser.parse_args()
@@ -82,11 +82,11 @@ if __name__ == '__main__':
 	slack_url = args.slack
 	if args.message:
 		message = args.message
-	if args.text_col:
-		text_col = args.text_col
+	if args.title_col:
+		title_col = args.title_col
 	if args.image_col:
 		image_col = args.image_col
 	if args.num_rows:
 		num_rows = args.num_rows
 	
-	main(data_url, slack_url, message, text_col, image_col, num_rows)
+	main(data_url, slack_url, message, title_col, image_col, num_rows)
