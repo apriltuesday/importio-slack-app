@@ -31,3 +31,4 @@ A bot to post lunches from City Pantry.
 - should ideally only post the diff...
 - make a full app (with optional webhook, bot, slash commands) where you set vars in a config, install requirements, and run
 - store data? (e.g. lunch feedback)
+- add polling functionality (esp. if we store)
