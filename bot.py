@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+#
 # Import.io Slackbots for all!
 #
 # Adapted with gratitude from
@@ -8,11 +11,13 @@
 
 import os
 import requests
+import string
 import time
 from datetime import date
 from slackclient import SlackClient
 
 from config import config
+from stopwords import STOPWORDS
 
 # how bot is addressed
 AT_BOT = '<@{}>'.format(config.SLACK_BOT_ID)
@@ -36,11 +41,12 @@ def get_attachments(key_val=None):
     r = requests.get(config.IMPORT_DATA_URL)
     if r.status_code == 200:
         print('Data request successful')
-        data = r.json()['result']['extractorData']['data'][0]['group']
-        data = data[:config.NUM_ROWS] if config.NUM_ROWS else data
+        data = r.json()['extractorData']['data'][0]['group']
 
         # Make one attachment for each data row
         for d in data:
+            if len(attachments) == config.MAX_ROWS:
+                break
             if config.KEY_COL and (config.KEY_COL not in d.keys() or key_val not in d[config.KEY_COL][0]['text']):
                 continue
 
@@ -55,7 +61,7 @@ def get_attachments(key_val=None):
                 if name == config.IMAGE_COL:
                     row['image_url'] = props['src'] if 'src' in props.keys() else props['text']
                     continue
-                if 'text' not in props.keys():
+                if (config.FIELDS and name not in config.FIELDS) or 'text' not in props.keys():
                     continue
 
                 # Get other fields
@@ -67,8 +73,7 @@ def get_attachments(key_val=None):
             attachments.append(row)
 
         if len(attachments) == 0:
-            attachments.append({'text':
-                'No data found matching {} == {} in the past {} rows'.format(config.KEY_COL, key_val, config.NUM_ROWS)})
+            attachments.append({'text': 'No data found matching {} == {}'.format(config.KEY_COL, key_val)})
     else:
         attachments.append({'text': 'Request not successful'})
     return attachments
@@ -83,12 +88,18 @@ def handle_command(command, channel):
     response = config.DEFAULT_MESSAGE
     attach = None
 
-    for day in weekdays:
-        if day in command:
+    # Option 1: pre-configured values to look for
+    if config.KEY_VALUES:
+        for val in config.KEY_VALUES:
+            if val in command:
+                response = config.MESSAGE
+                attach = get_attachments(val)
+    # Option 2: text search?
+    else:
+        for word in process_text(command):
+            print(word)
             response = config.MESSAGE
-            # convert day to date, because of how data formatted
-            date_string = get_formatted_date(day)
-            attach = get_attachments(date_string)
+            attach = get_attachments(word)
 
     print('Done!')
     # Send response
@@ -96,6 +107,11 @@ def handle_command(command, channel):
                           text=response, attachments=attach,
                           as_user=True)
 
+def process_text(text):
+    # There are a few problems with this...
+    text = ''.join([c for c in text if c not in string.punctuation])
+    words = text.split()
+    return [w for w in words if w not in STOPWORDS]
 
 def parse_slack_output(slack_rtm_output):
     """

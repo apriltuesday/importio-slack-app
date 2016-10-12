@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+# 
 # LunchBot wants to know what's for lunch.
 #
 # Adapted with gratitude from
@@ -81,7 +84,7 @@ def get_cat():
 
 
 def post_poll():
-    response = "What did you think of today's lunch?\n:+1: Loved it!\n:-1: Please, never again..."
+    response = "What did you think of today's lunch?\n:+1: Loved it!\n:-1: Please, never again...\n:unicorn: ¯\_(ツ)_/¯"
     val = get_formatted_date(get_actual_day(TODAY))
     attach = get_attachments(DATA_URL, TITLE_COL, IMAGE_COL, key_col=KEY_COL, key_val=val)
 
