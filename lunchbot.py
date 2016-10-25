@@ -23,7 +23,7 @@ BOT_ID = os.environ.get("BOT_ID")
 # how bot is addressed
 AT_BOT = "<@" + BOT_ID + ">"
 # default channel to post to (e.g. for polls)
-CHANNEL = "#corsham-street"
+CHANNEL = "#whitechapel"
 
 # commands
 MONDAY = 'monday'
