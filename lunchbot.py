@@ -95,6 +95,12 @@ def post_poll():
                           as_user=True)
 
 
+def log_poll():
+	pass
+	# at time that today's poll is being posted
+	# save all reactions to yesterday's poll to a csv
+
+
 def handle_command(command, channel):
     """
         Receives commands directed at the bot and determines if they
