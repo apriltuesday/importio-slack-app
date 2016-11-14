@@ -169,7 +169,7 @@ if __name__ == "__main__":
 
             # polling
             now = datetime.now()
-            if not POLLED and (now.hour == POLL_TIME) and (now.weekday < 5):
+            if not POLLED and (now.hour == POLL_TIME) and (now.weekday() < 5):
                 post_poll()
                 POLLED = True
             if now.hour > POLL_TIME:
