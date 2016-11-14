@@ -168,10 +168,11 @@ if __name__ == "__main__":
                 handle_command(command, channel)
 
             # polling
-            if not POLLED and (datetime.now().hour == POLL_TIME):
+            now = datetime.now()
+            if not POLLED and (now.hour == POLL_TIME) and (now.weekday < 5):
                 post_poll()
                 POLLED = True
-            if datetime.now().hour > POLL_TIME:
+            if now.hour > POLL_TIME:
                 POLLED = False
 
             time.sleep(READ_WEBSOCKET_DELAY)
