@@ -84,15 +84,16 @@ def get_cat():
 
 
 def post_poll():
-    response = "What did you think of today's lunch?\n:+1: Loved it!\n:-1: Please, never again...\n:unicorn: ¯\_(ツ)_/¯"
+    text = "What did you think of today's lunch?\n:+1: Loved it!\n:-1: Please, never again...\n:unicorn: ¯\_(ツ)_/¯"
     val = get_formatted_date(get_actual_day(TODAY))
     attach = get_attachments(DATA_URL, TITLE_COL, IMAGE_COL, key_col=KEY_COL, key_val=val)
 
     print 'done'
-    # Send response
-    slack_client.api_call("chat.postMessage", channel=CHANNEL,
-                          text=response, attachments=attach,
+    # Send poll
+    response = slack_client.api_call("chat.postMessage", channel=CHANNEL,
+                          text=text, attachments=attach,
                           as_user=True)
+    poll_timestamp = response['ts']
 
 
 def log_poll():
