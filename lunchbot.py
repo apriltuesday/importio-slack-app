@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+# 
 # LunchBot wants to know what's for lunch.
 #
 # Adapted with gratitude from
@@ -9,7 +12,7 @@
 import os
 import requests
 import time
-from datetime import date
+from datetime import date, datetime
 from slackclient import SlackClient
 
 from slack_app import get_attachments
@@ -19,6 +22,8 @@ from slack_app import get_attachments
 BOT_ID = os.environ.get("BOT_ID")
 # how bot is addressed
 AT_BOT = "<@" + BOT_ID + ">"
+# default channel to post to (e.g. for polls)
+CHANNEL = "#whitechapel"
 
 # commands
 MONDAY = 'monday'
@@ -61,6 +66,12 @@ def get_formatted_date(day):
     return current.strftime('%d %B %Y')
 
 
+def get_actual_day(day):
+    # for day = TODAY or YESTERDAY
+    today = date.today().weekday()
+    return all_days[today if day == TODAY else next_day(today)]
+
+
 def get_cat():
     attach = []
     r = requests.get('http://thecatapi.com/api/images/get')
@@ -70,6 +81,25 @@ def get_cat():
             'text': '<' + r.url + '|src>'
         }]
     return attach
+
+
+def post_poll():
+    text = "What did you think of today's lunch?\n:+1: Loved it!\n:-1: Please, never again...\n:unicorn: ¯\_(ツ)_/¯"
+    val = get_formatted_date(get_actual_day(TODAY))
+    attach = get_attachments(DATA_URL, TITLE_COL, IMAGE_COL, key_col=KEY_COL, key_val=val)
+
+    print 'done'
+    # Send poll
+    response = slack_client.api_call("chat.postMessage", channel=CHANNEL,
+                          text=text, attachments=attach,
+                          as_user=True)
+    poll_timestamp = response['ts']
+
+
+def log_poll():
+	pass
+	# at time that today's poll is being posted
+	# save all reactions to yesterday's poll to a csv
 
 
 def handle_command(command, channel):
@@ -99,8 +129,7 @@ def handle_command(command, channel):
     for day in relative:
         if day in command:
             # compute which day, and handle command with that day
-            today = date.today().weekday()
-            actual_day = all_days[today if day == TODAY else next_day(today)]
+            actual_day = get_actual_day(day)
             handle_command(actual_day, channel)
             return # so it doesn't post twice
 
@@ -129,12 +158,24 @@ def parse_slack_output(slack_rtm_output):
 
 if __name__ == "__main__":
     READ_WEBSOCKET_DELAY = 1 # 1 second delay between reading from firehose
+    POLL_TIME = 14 # what hour to poll after
+    POLLED = False # have we polled yet today?
+
     if slack_client.rtm_connect():
         print("LunchBot connected and running!")
         while True:
             command, channel = parse_slack_output(slack_client.rtm_read())
             if command and channel:
                 handle_command(command, channel)
+
+            # polling
+            now = datetime.now()
+            if not POLLED and (now.hour == POLL_TIME) and (now.weekday() < 5):
+                post_poll()
+                POLLED = True
+            if now.hour > POLL_TIME:
+                POLLED = False
+
             time.sleep(READ_WEBSOCKET_DELAY)
     else:
         print("Connection failed. Invalid Slack token or bot ID?")

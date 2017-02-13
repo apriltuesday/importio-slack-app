@@ -37,7 +37,8 @@ def get_attachments(data_url, title_col, image_col, num_rows=None, key_col=None,
 
 				# Get text and image
 				if name == title_col:
-					row['title'] = props['text']
+					row['title'] = get_text_with_link(props)
+
 					continue
 				if name == image_col:
 					row['image_url'] = props['src'] if 'src' in props.keys() else props['text']
@@ -46,7 +47,7 @@ def get_attachments(data_url, title_col, image_col, num_rows=None, key_col=None,
 					continue
 
 				# Get other fields
-				value = '<' + props['href'] + '|' + props['text'] + '>' if 'href' in props.keys() else props['text']
+				value = get_text_with_link(props)
 				f = {'title': name, 'value': value}
 				if len(props['text']) < 32:
 					f['short'] = True
@@ -59,6 +60,10 @@ def get_attachments(data_url, title_col, image_col, num_rows=None, key_col=None,
 	else:
 		attachments.append({'text': 'Request not successful'})
 	return attachments
+
+
+def get_text_with_link(props):
+	return '<' + props['href'] + '|' + props['text'] + '>' if 'href' in props.keys() else props['text']
 
 
 if __name__ == '__main__':

@@ -29,5 +29,5 @@ A bot to post lunches from City Pantry.
 
 ## To-Do
 - should ideally only post the diff...
-- also needs a scheduled import api, this needs to be scheduled to match
-- how to get images robustly?
+- make a full app (with optional webhook, bot, slash commands) where you set vars in a config, install requirements, and run
+- store data? (e.g. lunch feedback)
